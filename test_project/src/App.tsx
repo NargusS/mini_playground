@@ -3,8 +3,8 @@ import reactLogo from './assets/react.svg'
 import './App.css'
 
 function Playground(){
-  const [position, setPosition] = useState(0);
   const [ctx, setCtx] = useState(null);
+  const [otherctx, setotherCtx] = useState(null);
   
   function updateDisplay(event, canvas) {
     if (ctx !== null)
@@ -12,12 +12,23 @@ function Playground(){
       ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
     }
     setCtx(canvas?.getContext('2d'))
-    if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1))
-      setPosition(event.nativeEvent.offsetY);
-    else
-      setPosition(canvas.height-(canvas.height * 0.1));
     ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-    ctx.fillRect(canvas.width-(canvas.width * 0.02), position, canvas.width * 0.02, canvas.height * 0.1)
+    if (event.nativeEvent.offsetY <= 0)
+      ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
+    else if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1))
+      ctx.fillRect(canvas.width-(canvas.width * 0.02), event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
+    else
+      ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
+  }
+
+  function updateOtherplayer(canvas){
+    if (otherctx !== null)
+    {
+      otherctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
+    }
+    setotherCtx(canvas?.getContext('2d'))
+    otherctx.fillStyle = 'rgba(255, 0, 0, 1)'
+    otherctx.fillRect(0, position, canvas.width * 0.02, canvas.height * 0.1)
   }
 
   // useEffect(() => {}, [position]);
