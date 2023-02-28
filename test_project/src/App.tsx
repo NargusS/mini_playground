@@ -9,7 +9,7 @@ function Playground(){
   function updateDisplay(event, canvas) {
     if (ctx !== null)
     {
-      ctx.clearRect(0,0,canvas.width, canvas.height);
+      ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
     }
     setCtx(canvas?.getContext('2d'))
     if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1))
