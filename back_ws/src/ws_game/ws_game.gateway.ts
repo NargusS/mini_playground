@@ -1,42 +1,57 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, ConnectedSocket ,WebSocketServer} from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, ConnectedSocket ,WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
 import { WsGameService } from './ws_game.service';
-import { CreateWsGameDto } from './dto/create-ws_game.dto';
-import { UpdateWsGameDto } from './dto/update-ws_game.dto';
-import { Server } from 'socket.io';
-import { Socket } from 'socket.io';
-import { OnModuleInit } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(4242, {transports:['websocket'], cors:true})
-export class WsGameGateway implements OnModuleInit{
+@WebSocketGateway(4242, {transports:['websocket'], namespace: 'ws-game', cors: true})
+
+// export class WsGameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+export class WsGameGateway{
   @WebSocketServer()
   server: Server;
-  number_of_player: number = 0;
   constructor(private readonly wsGameService: WsGameService) {}
   
   //creer un tableau d'objet room {room_name, number_of_player or clients[], scores[], is_playing}
 
-  onModuleInit() {
-    this.server.on("connection",(socket) =>{
-      console.log(socket.id);
-      console.log("Connected");
-      this.number_of_player++;
-      this.server.emit('playerid', {id:socket.id,player:this.number_of_player});
-    })
+  afterInit() {
+    console.log("Init");
   }
   
-  @SubscribeMessage('disconnect')
-  disconnect(@ConnectedSocket() client: Socket):void{
-    this.number_of_player--;
+  @SubscribeMessage('ConnectedPlayer')
+  handleConnectedPlayer(data:number): number {
+    console.log("Event connection")
+    return data;
   }
 
-  @SubscribeMessage('playerid')
-  playerid(@ConnectedSocket() client: Socket, @MessageBody()data):void{
-    this.server.except([client.id]).emit('playerid', {id:client.id,player:this.number_of_player});
+  handleConnection(client: Socket) {
+    console.log("New Connection")
+    this.wsGameService.newUserConnected(client, this.server);
   }
 
-  @SubscribeMessage('test')
-  test(@ConnectedSocket() client: Socket, @MessageBody() data):void{
-    this.server.except([client.id]).emit('test', data);
+  handleDisconnect(client: Socket) {
+    console.log("New Disconnection")
+    this.wsGameService.userDisconnected(client, this.server);
   }
+
+  // Function for create a room for playing
+  @SubscribeMessage('CreateRoom')
+  handleCreateRoom(@ConnectedSocket() client: Socket): void {
+    this.wsGameService.createRoom(client, this.server);
+  }
+  // Function for join a room for playing
+  @SubscribeMessage('JoinRoom')
+  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {
+    this.wsGameService.joinRoom(client, this.server, room_name);
+  }
+  // Function for leave a room for playing
+
+  // Function for start a game
+
+  // Function for list all room
+  @SubscribeMessage('ListRoom')
+  handleListRoom(@ConnectedSocket() client: Socket): void {
+    this.wsGameService.listRoom(client, this.server);
+  }
+
+  // Function for list all player in a room 
 
 }
