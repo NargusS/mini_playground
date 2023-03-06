@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import {v4 as uuidv4} from 'uuid';
+import {uuidv4} from 'uuid';
 
 type Room = {
   room_name: string;
@@ -48,7 +48,6 @@ export class WsGameService {
   
     client.join(room.room_name);
     server.to(room.room_name).emit('RoomCreated', room.room_name);
-    console.log("Room:"+room.room_name+" was Created")
   }
 
   joinRoom(client:Socket, server:Server, room_name:string): void {
@@ -66,7 +65,7 @@ export class WsGameService {
     }
   }
 
-  listRoom(): Room[] {
-    return this.rooms;
+  listRoom(client:Socket, server:Server): void {
+    server.to(client.id).emit('RoomList', this.rooms);
   }
 }

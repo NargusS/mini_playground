@@ -46,6 +46,12 @@ export class WsGameGateway{
 
   // Function for start a game
 
+  // Function for list all room
+  @SubscribeMessage('ListRoom')
+  handleListRoom(@ConnectedSocket() client: Socket): void {
+    this.wsGameService.listRoom(client, this.server);
+  }
+
   // Function for list all player in a room 
 
 }
