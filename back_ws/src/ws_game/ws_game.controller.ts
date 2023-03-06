@@ -9,4 +9,10 @@ export class WsGameController {
 	getConnectedPlayer(): number {
 		return this.WsGameService.getNumberOfConnectedPeople();
 	}
+
+	@Get('/listRoom')
+	getListRooms(): any {
+		return this.WsGameService.listRoom();
+	}
+
 }
