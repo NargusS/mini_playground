@@ -47,7 +47,7 @@ export class WsGameService {
     this.rooms.push(room);
   
     client.join(room.room_name);
-    server.emit('RoomCreated', room.room_name);
+    server.to(room.room_name).emit('RoomCreated', room.room_name);
     console.log("Room:"+room.room_name+" was Created")
   }
 
