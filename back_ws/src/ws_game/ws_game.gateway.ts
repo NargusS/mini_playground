@@ -33,24 +33,29 @@ export class WsGameGateway{
   }
 
   // Function for create a room for playing
-  @SubscribeMessage('CreateRoom')
-  handleCreateRoom(@ConnectedSocket() client: Socket): void {
-    this.wsGameService.createRoom(client, this.server);
+  // @SubscribeMessage('CreateRoom')
+  // handleCreateRoom(@ConnectedSocket() client: Socket): void {
+  //   this.wsGameService.createRoom(client, this.server);
+  // }
+
+  @SubscribeMessage('matchmaking')
+  handleMatchmaking(@ConnectedSocket() client: Socket): void {
+    this.wsGameService.matchmaking(client, this.server);
   }
+
+  @SubscribeMessage('MakeMove')
+  handleMakeMove(@ConnectedSocket() client: Socket, @MessageBody() data: any): void {
+    this.wsGameService.MakeMove(client, this.server,data);
+  }
+
   // Function for join a room for playing
-  @SubscribeMessage('JoinRoom')
-  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {
-    this.wsGameService.joinRoom(client, this.server, room_name);
-  }
+  // @SubscribeMessage('JoinRoom')
+  // handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {
+  //   this.wsGameService.joinRoom(client, this.server, room_name);
+  // }
   // Function for leave a room for playing
 
   // Function for start a game
-
-  // Function for list all room
-  @SubscribeMessage('ListRoom')
-  handleListRoom(@ConnectedSocket() client: Socket): void {
-    this.wsGameService.listRoom(client, this.server);
-  }
 
   // Function for list all player in a room 
 
