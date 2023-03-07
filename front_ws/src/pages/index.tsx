@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react"
-import { io } from "socket.io-client"
 import { useRouter } from "next/router"
 import { SocketContext } from "./_app"
 
@@ -19,14 +18,19 @@ function Home() {
   useEffect(() => {
     // socket.connect();
     getRooms().then((data) => {
+      console.log(data)
       setRooms(data);
     })
+
     socket.on("ConnectedPlayer", (value:number) => {
       setConnectedUser(value);
     })
 
+    socket.on("NewMatch", (value:any) => {
+      setRooms(value);
+    })
+
     socket.on("FindGame", (value:any) => {
-      // setRooms((prev:any) => [...prev,value]);
       router.push("/"+value);
     })
   },[])
@@ -37,13 +41,13 @@ function Home() {
         <h1 className="text-3xl">Playground</h1>
         <h3 className="text-xl">Connected Users: {connectedUser}</h3>
         <ul>
-          {/* {rooms.length > 0 ? rooms.map((room:any) => {
+          {rooms.length > 0 ? rooms.map((room:any) => {
             return (
-              <li key={room}>
-                IDROOM:{room}
+              <li key={room.room_name}>
+                IDROOM:{room.room_name}
               </li>
             )
-          }) : <li>No rooms</li>} */}
+          }) : <li>No rooms</li>}
         </ul>
         <button onClick={() => {
           // sessionStorage.setItem("playerId", socket.id);

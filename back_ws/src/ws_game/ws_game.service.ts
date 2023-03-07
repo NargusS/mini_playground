@@ -133,6 +133,7 @@ export class WsGameService {
       else if (room.player2 === '') {
         room.player2 = client.id;
         client.join(room.room_name);
+        server.emit('NewMatch', this.rooms.filter(room => room.player1 !== '' && room.player2 !== ''));
       }
       else {
         room.spectators.push(client.id);
@@ -141,6 +142,6 @@ export class WsGameService {
     }
   }
   getRooms(): Room[] {
-    return this.rooms;
+    return this.rooms.filter(room => room.player1 !== '' && room.player2 !== '');
   }
 }
