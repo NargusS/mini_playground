@@ -105,7 +105,7 @@ function Playground({id_game}:{id_game:string}){
 		  ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 		  ctx.fillRect(canvas.width-(canvas.width * 0.02), event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
 		}
-		socket.emit('MakeMove', {id_game:id_game,player:player_role, position: event.nativeEvent.offsetY});
+		socket.emit('MakeMove', {id_game:id_game,player:player_role, position: event.nativeEvent.offsetY/(canvas.height-(canvas.height * 0.1))});
 	  }
 	  else{
 		if (player_role == 1){
@@ -116,7 +116,7 @@ function Playground({id_game}:{id_game:string}){
 		  ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 		  ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
 		}
-		socket.emit('MakeMove', {id_game:id_game,player:player_role, position: canvas.height-(canvas.height * 0.1)});
+		socket.emit('MakeMove', {id_game:id_game,player:player_role, position: 0.9});
 	  }
 	}
   
@@ -132,7 +132,7 @@ function Playground({id_game}:{id_game:string}){
 			return;// throw new Error("Context not found");
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 		ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
-		ctx.fillRect(0, player1, canvas.width * 0.02, canvas.height * 0.1)
+		ctx.fillRect(0, canvas.height * player1, canvas.width * 0.02, canvas.height * 0.1)
 	}, [player1])
   
 	useEffect(() => {
@@ -144,10 +144,11 @@ function Playground({id_game}:{id_game:string}){
 		  return;// throw new Error("Context not found");
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 		ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
-	  	ctx.fillRect(canvas.width-(canvas.width * 0.02), player2, canvas.width * 0.02, canvas.height * 0.1)
+	  	ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height*player2, canvas.width * 0.02, canvas.height * 0.1)
 	}, [player2])
   
 	socket.on('UpdateCanvas', (data) => {
+	  console.log(data.player_role);
 	  if (data.player_role == 1)
 		setPlayer1(data.position)
 	  else if (data.player_role == 2)

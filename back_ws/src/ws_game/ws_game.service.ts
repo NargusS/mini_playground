@@ -103,7 +103,7 @@ export class WsGameService {
 
   MakeMove(client: Socket, server:Server, data: any): void {
     console.log("MakeMove: " + data.id_game + " " + data.player + " " + data.position);
-    server.to(data.id_game.toString()).emit('UpdateCanvas', {player_role: data.player, position: data.position});
+    server.to(data.id_game.toString()).except(client.id).emit('UpdateCanvas', {player_role: data.player, position: data.position});
   }
 
   getRoles(room_name: string, playerId: string): number {
