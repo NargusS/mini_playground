@@ -1,6 +1,6 @@
 import { connect } from 'http2';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from './_app';
 
 // function GamePage(){
@@ -24,6 +24,7 @@ async function fetchRole(id_game:string, playerId:string){
 
 function Playground({id_game}:{id_game:string}){
 	const socket = useContext(SocketContext);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [playerId, setPlayerId] = useState<any>("");
 	const [player_role, setPlayer_role] = useState(0);
 	const [player1, setPlayer1] = useState(0);
@@ -36,16 +37,25 @@ function Playground({id_game}:{id_game:string}){
 		fetchRole(id_game, socket.id).then((data) => {
 			setPlayer_role(data);
 		})
-		const canvas = document.getElementById("canvas");
+		const canvas = canvasRef.current;
+		if (!canvas)
+			return;//console.log("canvas is null");
 		const ctx = canvas?.getContext('2d');
+		if (!ctx)
+			return;//console.log("ctx is null");
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 		ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 		ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
 	}, [])
 
-	function updateDisplay(event, canvas) {
-	  const ctx = canvas?.getContext('2d');
+	function updateDisplay(event:any) {
+		const canvas = canvasRef.current;
+		if(!canvas)
+			return;//console.log("canvas is null");
+		const ctx = canvas.getContext('2d');
+		if (!ctx)
+			return;//console.log("ctx is null");
 	  if (player_role == 1)
 		ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
 	  else if (player_role == 2)
@@ -89,25 +99,30 @@ function Playground({id_game}:{id_game:string}){
 	
   
 	useEffect(() => {
-	  const canvas = document.getElementById("canvas");
-	  const ctx = canvas?.getContext('2d');
-  
-	  ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-	  ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
-	  ctx.fillRect(0, player1, canvas.width * 0.02, canvas.height * 0.1)
+		const canvas = canvasRef.current;
+		if (!canvas)
+			return;// throw new Error("Canvas not found");
+		const ctx = canvas?.getContext('2d');
+		if (!ctx)
+			return;// throw new Error("Context not found");
+		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
+		ctx.fillRect(0, player1, canvas.width * 0.02, canvas.height * 0.1)
 	}, [player1])
   
 	useEffect(() => {
-	  const canvas = document.getElementById("canvas");
-	  const ctx = canvas?.getContext('2d');
-	
-	  ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-	  ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
-	  ctx.fillRect(canvas.width-(canvas.width * 0.02), player2, canvas.width * 0.02, canvas.height * 0.1)
+		const canvas = canvasRef.current;
+		if (!canvas)
+		  return;// throw new Error("Canvas not found");
+		const ctx = canvas?.getContext('2d');
+		if (!ctx)
+		  return;// throw new Error("Context not found");
+		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
+	  	ctx.fillRect(canvas.width-(canvas.width * 0.02), player2, canvas.width * 0.02, canvas.height * 0.1)
 	}, [player2])
   
 	socket.on('UpdateCanvas', (data) => {
-	  console.log("UPDATE CANVAS: " + data);
 	  if (data.player_role == 1)
 		setPlayer1(data.position)
 	  else if (data.player_role == 2)
@@ -117,7 +132,7 @@ function Playground({id_game}:{id_game:string}){
 
 	return (
 	<>
-	  	<canvas id="canvas" width={500} height={300} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt, document.getElementById("canvas"))} onMouseEnter={(evt)=> updateDisplay(evt, document.getElementById("canvas"))} onMouseLeave={(evt)=> updateDisplay(evt, document.getElementById("canvas"))}></canvas>
+	  	<canvas id="canvas" ref={canvasRef} width={500} height={300} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)} onMouseEnter={(evt)=> updateDisplay(evt)} onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
 	</>
    ); 
 }
