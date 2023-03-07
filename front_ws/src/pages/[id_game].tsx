@@ -25,11 +25,36 @@ async function fetchRole(id_game:string, playerId:string){
 function Playground({id_game}:{id_game:string}){
 	const socket = useContext(SocketContext);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [size, setSize] = useState({width: 0, height: 0});
 	const [playerId, setPlayerId] = useState<any>("");
 	const [player_role, setPlayer_role] = useState(0);
 	const [player1, setPlayer1] = useState(0);
 	const [player2, setPlayer2] = useState(0);
 	
+
+	useEffect(() => {		
+		function updateWindowDimensions() {
+			console.log("SIZE: " + size.width + " " + size.height);
+			const width = window.innerWidth * 0.8;
+			const height = window.innerHeight * 0.8;
+	
+			if (width > height){
+				if (width > height * (1.75))
+					setSize({width: height*(1.75), height: height});
+				else
+					setSize({width: width, height: width/1.75});
+			}
+			else if (width < height){
+				if (height > width * (1.75))
+					setSize({width: width, height: width*(1.75)});
+				else
+					setSize({width: height/1.75, height: height});
+			}
+		}
+		updateWindowDimensions();
+		window.addEventListener("resize", updateWindowDimensions);
+	}, [])
+
 	useEffect(() => {
 		if (!socket.connected)
 			socket.connect();
@@ -132,7 +157,7 @@ function Playground({id_game}:{id_game:string}){
 
 	return (
 	<>
-	  	<canvas id="canvas" ref={canvasRef} width={500} height={300} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)} onMouseEnter={(evt)=> updateDisplay(evt)} onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
+	  	<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)} onMouseEnter={(evt)=> updateDisplay(evt)} onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
 	</>
    ); 
 }
