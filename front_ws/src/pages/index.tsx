@@ -24,12 +24,11 @@ function Home() {
     socket.on("ConnectedPlayer", (value:number) => {
       setConnectedUser(value);
     })
-    socket.on("newRoom", (value:any) => {
-      setRooms(value);
+
+    socket.on("FindGame", (value:any) => {
+      // setRooms((prev:any) => [...prev,value]);
+      router.push("/"+value);
     })
-    // socket.on("FindGame", (value:any) => {
-      //   router.push("/"+ value);
-      // })
   },[])
   
   return (
@@ -38,16 +37,17 @@ function Home() {
         <h1 className="text-3xl">Playground</h1>
         <h3 className="text-xl">Connected Users: {connectedUser}</h3>
         <ul>
-          {rooms.length > 0 ? rooms.map((room:any) => {
+          {/* {rooms.length > 0 ? rooms.map((room:any) => {
             return (
-              <li key={room.room_name}>
-                IDROOM:{room.room_name} IDPLAYER1:{room.player1} IDPLAYER2:{room.player2} SCORE:[{room.player1_score}:{room.player2_score}] STATUS:{room.is_playing ? "Playing" : "Waiting"}
+              <li key={room}>
+                IDROOM:{room}
               </li>
             )
-          }) : <li>No rooms</li>}
+          }) : <li>No rooms</li>} */}
         </ul>
         <button onClick={() => {
-          sessionStorage.setItem("playerId", socket.id);
+          // sessionStorage.setItem("playerId", socket.id);
+          console.log("SOCKET ID: " + socket.id);
           socket.emit("matchmaking")
         }}>Matchmaking</button>
       </main>

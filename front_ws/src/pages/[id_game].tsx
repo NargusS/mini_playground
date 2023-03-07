@@ -1,3 +1,4 @@
+import { connect } from 'http2';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { SocketContext } from './_app';
@@ -13,13 +14,12 @@ import { SocketContext } from './_app';
 // 	);
 // }
 
-async function fetchRole(id_game:string){
-	console.log("ID PROUT " + sessionStorage.playerId);
-	console.log("LINK :"+"http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ sessionStorage.playerId);
-	const res = await fetch("http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ sessionStorage.playerId);
+async function fetchRole(id_game:string, playerId:string){
+	console.log("LINK :"+"http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
+	const res = await fetch("http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
 	const data = await res.json();
 	// console.log(data);
-	return data;	
+	return data;
 }
 
 function Playground({id_game}:{id_game:string}){
@@ -28,7 +28,22 @@ function Playground({id_game}:{id_game:string}){
 	const [player_role, setPlayer_role] = useState(0);
 	const [player1, setPlayer1] = useState(0);
 	const [player2, setPlayer2] = useState(0);
-  
+	
+	useEffect(() => {
+		if (!socket.connected)
+			socket.connect();
+		socket.emit('JoinRoom', id_game);
+		fetchRole(id_game, socket.id).then((data) => {
+			setPlayer_role(data);
+		})
+		const canvas = document.getElementById("canvas");
+		const ctx = canvas?.getContext('2d');
+		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
+		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
+	}, [])
+
 	function updateDisplay(event, canvas) {
 	  const ctx = canvas?.getContext('2d');
 	  if (player_role == 1)
@@ -71,37 +86,6 @@ function Playground({id_game}:{id_game:string}){
 	}
   
   
-	useEffect(() => {
-	//   console.log("ID GAME: " + id_game);
-	  fetchRole(id_game).then((data) => {
-		// console.log(data)
-		setPlayer_role(data);
-	  })
-	  const canvas = document.getElementById("canvas");
-	  const ctx = canvas?.getContext('2d');
-	  ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-	  ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
-	  ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-	  ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
-
-	  socket.on('test',() => {
-		  console.log("UPDATE CANVAS");
-	  });
-
-	  return () => {
-		socket.off("disconnect");
-	  }
-	}, [])
-
-	// socket.on('connect', () => {
-	//   console.log('connected');
-	// })
-  
-	// socket.on('playerid', (data) => {
-	//   if (socket.id == data.id){
-	// 	setPlayer_role(data.player);
-	//   }
-	// })
 	
   
 	useEffect(() => {
@@ -122,13 +106,13 @@ function Playground({id_game}:{id_game:string}){
 	  ctx.fillRect(canvas.width-(canvas.width * 0.02), player2, canvas.width * 0.02, canvas.height * 0.1)
 	}, [player2])
   
-	// socket.on('UpdateCanvas', (data) => {
-	//   console.log("UPDATE CANVAS: " + data);
-	// //   if (data.player_role == 1)
-	// // 	setPlayer1(data.position)
-	// //   else if (data.player_role == 2)
-	// // 	setPlayer2(data.position)
-	// });
+	socket.on('UpdateCanvas', (data) => {
+	  console.log("UPDATE CANVAS: " + data);
+	  if (data.player_role == 1)
+		setPlayer1(data.position)
+	  else if (data.player_role == 2)
+		setPlayer2(data.position)
+	});
   
 
 	return (

@@ -57,8 +57,8 @@ export class WsGameService {
   createRoom(client1:Socket,client2:Socket,server:Server): void {
     const room: Room = {
       room_name: uuidv4(),
-      player1: client1.id,
-      player2: client2.id,
+      player1: '',
+      player2: '',
       spectators: [],
       player1_score: 0,
       player2_score: 0,
@@ -67,11 +67,11 @@ export class WsGameService {
 
     this.rooms.push(room);
   
-    client1.join(room.room_name.toString());
-    client2.join(room.room_name.toString());
+    // client1.join(room.room_name.toString());
+    // client2.join(room.room_name.toString());
     console.log("Room created: " + room.room_name);
     server.to(room.room_name).emit('RoomCreated', room.room_name);
-    server.emit('newRoom', this.rooms);
+    server.to([client1.id, client2.id]).emit('FindGame', room.room_name);
   }
 
   // joinRoom(client:Socket, server:Server, room_name:string): void {
@@ -90,6 +90,8 @@ export class WsGameService {
   // }
 
   matchmaking(client:Socket, server:Server): void {
+    if (this.queue.includes(client))
+      return; // already in queue
     this.queue.push(client);
     if (this.queue.length > 1) {
       const player1: Socket = this.queue[0];
@@ -101,10 +103,7 @@ export class WsGameService {
 
   MakeMove(client: Socket, server:Server, data: any): void {
     console.log("MakeMove: " + data.id_game + " " + data.player + " " + data.position);
-    // server.emit('UpdateCanvas');
-    // client.emit('test');
-    server.to(data.id_game.toString()).emit('test');
-    // server.in(data.id_game.toString()).emit('UpdateCanvas', {player_role: data.player, position: data.position});
+    server.to(data.id_game.toString()).emit('UpdateCanvas', {player_role: data.player, position: data.position});
   }
 
   getRoles(room_name: string, playerId: string): number {
@@ -114,11 +113,33 @@ export class WsGameService {
         return 1;
       else if (room.player2 == playerId)
         return 2;
+      else
+        return 3;
     }
-    else
-      return 3;
+    return 0;
   }
 
+  joinRoom(client:Socket, server:Server, room_name:string): void {
+    console.log("JoinRoom: " + room_name + " " + client.id);
+    const room: Room = this.rooms.find(room => room.room_name === room_name);
+    if (room) {
+      console.log("JoinRoom: " + room_name + " " + client.id + " P1 :" + room.player1 + " P2:" + room.player2)
+      if (client.id === room.player1 || client.id === room.player2 || room.spectators.includes(client.id)) 
+        return;
+      if (room.player1 === '') {
+        room.player1 = client.id;
+        client.join(room.room_name);
+      }
+      else if (room.player2 === '') {
+        room.player2 = client.id;
+        client.join(room.room_name);
+      }
+      else {
+        room.spectators.push(client.id);
+        client.join(room.room_name);
+      }
+    }
+  }
   getRooms(): Room[] {
     return this.rooms;
   }

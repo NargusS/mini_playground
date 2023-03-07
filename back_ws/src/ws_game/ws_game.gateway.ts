@@ -6,8 +6,8 @@ import { Server, Socket } from 'socket.io';
 
 // export class WsGameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 export class WsGameGateway{
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() server: Server;
+  // server: Server;
   constructor(private readonly wsGameService: WsGameService) {}
   
   //creer un tableau d'objet room {room_name, number_of_player or clients[], scores[], is_playing}
@@ -41,6 +41,11 @@ export class WsGameGateway{
   @SubscribeMessage('matchmaking')
   handleMatchmaking(@ConnectedSocket() client: Socket): void {
     this.wsGameService.matchmaking(client, this.server);
+  }
+
+  @SubscribeMessage('JoinRoom')
+  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {
+    this.wsGameService.joinRoom(client, this.server, room_name);
   }
 
   @SubscribeMessage('MakeMove')
