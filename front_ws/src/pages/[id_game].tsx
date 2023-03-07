@@ -68,21 +68,27 @@ function Playground({id_game}:{id_game:string}){
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
-		const ctx = canvas?.getContext('2d');
-		if (!ctx)
-			return;//console.log("ctx is null");
-		if (size.orientation === 0){
-			ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-			ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
-			ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-			ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
-		}
-		else{
-			ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-			ctx.fillRect(0, 0, canvas.width * 0.1, canvas.height * 0.02)
-			ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-			ctx.fillRect(0, canvas.height-(canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
-		}
+		socket.on('UpdateCanvas', (data) => {
+			if (data.player_role == 1)
+		  		setPlayer1(data.position)
+			else if (data.player_role == 2)
+		  		setPlayer2(data.position)
+		});
+		// const ctx = canvas?.getContext('2d');
+		// if (!ctx)
+		// 	return;//console.log("ctx is null");
+		// if (size.orientation === 0){
+		// 	ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		// 	ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
+		// 	ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		// 	ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
+		// }
+		// else{
+		// 	ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+		// 	ctx.fillRect(0, 0, canvas.width * 0.1, canvas.height * 0.02)
+		// 	ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+		// 	ctx.fillRect(0, canvas.height-(canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
+		// }
 	}, [])
 
 	function updateDisplay(event:any) {
@@ -92,14 +98,21 @@ function Playground({id_game}:{id_game:string}){
 		const ctx = canvas.getContext('2d');
 		if (!ctx)
 			return;//console.log("ctx is null");
-		if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.02){
+		console.log((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height))
+		if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.05){
 			return;
 		}
-		else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.02){
+		else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.05){
 			return;
 		}
-		else
-			setPrevPos(event.nativeEvent.offsetY);
+		else{
+			if (size.orientation == 0){
+				setPrevPos(event.nativeEvent.offsetY);
+			}
+			else{
+				setPrevPos(event.nativeEvent.offsetX);
+			}
+		}
 
 		if (size.orientation == 0){
 			if (player_role == 1)
@@ -221,14 +234,6 @@ function Playground({id_game}:{id_game:string}){
 			ctx.fillRect(player2 * canvas.width, 0, canvas.width * 0.1, canvas.height * 0.02)
 		}
 	}, [player2])
-  
-	socket.on('UpdateCanvas', (data) => {
-	  if (data.player_role == 1)
-		setPlayer1(data.position)
-	  else if (data.player_role == 2)
-		setPlayer2(data.position)
-	});
-  
 
 	return (
 	<>
