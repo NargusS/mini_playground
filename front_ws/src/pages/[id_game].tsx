@@ -98,11 +98,11 @@ function Playground({id_game}:{id_game:string}){
 		const ctx = canvas.getContext('2d');
 		if (!ctx)
 			return;//console.log("ctx is null");
-		console.log((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height))
-		if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.05){
+		// CHANGE POURCENTAGE FOR SPEED		
+		if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.03){
 			return;
 		}
-		else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.05){
+		else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.03){
 			return;
 		}
 		else{
@@ -237,7 +237,7 @@ function Playground({id_game}:{id_game:string}){
 
 	return (
 	<>
-	  	<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)} onMouseEnter={(evt)=> updateDisplay(evt)} onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
+	  	<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)}  onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
 	</>
    ); 
 }
