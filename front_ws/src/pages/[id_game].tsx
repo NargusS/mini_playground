@@ -33,7 +33,7 @@ function Playground({id_game}:{id_game:string}){
 	const [prevPos, setPrevPos] = useState(0);
 	
 
-	useEffect(() => {		
+	useEffect(() => {
 		function updateWindowDimensions() {
 			console.log("SIZE: " + size.width + " " + size.height);
 			const width = window.innerWidth * 0.8;
@@ -236,21 +236,21 @@ function Playground({id_game}:{id_game:string}){
 	}, [player2])
 
 	return (
-	<>
-	  	<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)}  onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
-	</>
-   ); 
+		<>
+			<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)}  onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
+		</>
+	);
 }
-  
+
 function GamePage({}) {
 	const router = useRouter();
 	const { id_game } = router.query;
 
 	return (
-	  <div className="w-screen h-screen top-0 left-0 absolute grid grid-cols-1 items-center justify-items-center">
-		{id_game === undefined ? <div></div> : <Playground id_game={id_game}/>}
-	  </div>
+		<div className="w-screen h-screen top-0 left-0 absolute grid grid-cols-1 items-center justify-items-center">
+			{id_game === undefined ? <div></div> : <Playground id_game={id_game}/>}
+		</div>
 	)
 }
-  
+
 export default GamePage;
