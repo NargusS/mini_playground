@@ -20,11 +20,9 @@ function Home() {
 		socket.connect();
 		if (sessionStorage.playerId == undefined){
 			sessionStorage.setItem("playerId", uuidv4());
-			console.log("ID undefined: " + sessionStorage.playerId);
 			socket.emit("ClientSession", sessionStorage.playerId);
 		}
 		else{
-			console.log("ID defined: " + sessionStorage.playerId);
 			socket.emit("ClientSession", sessionStorage.playerId);
 		}
 		getRooms().then((data) => {
@@ -40,7 +38,7 @@ function Home() {
 		})
 
 		socket.on("FindGame", (value:any) => {
-			router.push("/"+value);
+			router.push("/" + value);
 		})
 	},[])
 	

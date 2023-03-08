@@ -50,12 +50,12 @@ export class WsGameGateway{
 
   @SubscribeMessage('JoinRoom')
   handleJoinRoom(@MessageBody() data:any) : void {
-    console.log("TEST :" + data.room_name + " " + data.playerId);
     this.wsGameService.joinRoom(data.room_name,data.playerId, this.server);
   }
 
   @SubscribeMessage('MakeMove')
   handleMakeMove(@ConnectedSocket() client: Socket, @MessageBody() data: any): void {
+    console.log("client : " + client.id)
     this.wsGameService.MakeMove(client, this.server,data);
   }
 

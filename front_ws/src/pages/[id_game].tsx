@@ -1,34 +1,21 @@
-import { connect } from 'http2';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from './_app';
 import { v4 as uuidv4 } from 'uuid';
-
-// function GamePage(){
-// 	const router = useRouter();
-// 	const { id_game } = router.query;
-
-// 	return (
-// 		<div>
-// 			{id_game}
-// 		</div>
-// 	);
-// }
+import { Socket } from 'socket.io-client';
 
 async function fetchRole(id_game:string, playerId:string){
-	console.log("LINK :"+"http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
 	const res = await fetch("http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
 	const data = await res.json();
-	// console.log(data);
 	return data;
 }
 
-function Playground({id_game}:{id_game:string}){
-	const socket = useContext(SocketContext);
+function Playground(props:{role:number, id_game:string, socket:Socket}){
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const role = props.role;
+	const id_game = props.id_game;
+	const socket = props.socket;
 	const [size, setSize] = useState({orientation:0, width: 0, height: 0});
-	const [playerId, setPlayerId] = useState<any>("");
-	const [player_role, setPlayer_role] = useState(0);
 	const [player1, setPlayer1] = useState(0);
 	const [player2, setPlayer2] = useState(0);
 	const [prevPos, setPrevPos] = useState(0);
@@ -36,7 +23,6 @@ function Playground({id_game}:{id_game:string}){
 
 	useEffect(() => {
 		function updateWindowDimensions() {
-			console.log("SIZE: " + size.width + " " + size.height);
 			const width = window.innerWidth * 0.8;
 			const height = window.innerHeight * 0.8;
 	
@@ -60,17 +46,6 @@ function Playground({id_game}:{id_game:string}){
 	}, [])
 
 	useEffect(() => {
-		socket.connect();
-		if (sessionStorage.playerId == undefined){
-			sessionStorage.setItem("playerId", uuidv4());
-			socket.emit("ClientSession", sessionStorage.playerId);
-		}
-		else
-			socket.emit("ClientSession", sessionStorage.playerId);
-		socket.emit('JoinRoom', {room_name:id_game, playerId:sessionStorage.playerId});
-		fetchRole(id_game, sessionStorage.playerId).then((data) => {
-			setPlayer_role(data);
-		})
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
@@ -121,82 +96,82 @@ function Playground({id_game}:{id_game:string}){
 		}
 
 		if (size.orientation == 0){
-			if (player_role == 1)
+			if (role == 1)
 				ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
-			else if (player_role == 2)
+			else if (role == 2)
 				ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
 			if (event.nativeEvent.offsetY <= 0){
-				if (player_role == 1){
+				if (role == 1){
 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 				ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 				ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: 0});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
 			}
 			else if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1)){
-				if (player_role == 1){
+				if (role == 1){
 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 				ctx.fillRect(0, event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 				ctx.fillRect(canvas.width-(canvas.width * 0.02), event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: event.nativeEvent.offsetY/(canvas.height)});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetY/(canvas.height)});
 			}
 			else{
-				if (player_role == 1){
+				if (role == 1){
 					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 					ctx.fillRect(0, canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 					ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: 0.9});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
 			}
 		}
 		else{
 			// ORIENTATION 1
-			if (player_role == 1)
+			if (role == 1)
 				ctx.clearRect(0, canvas.height - (canvas.height * 0.03), canvas.width, canvas.height* 0.03);
-			else if (player_role == 2)
+			else if (role == 2)
 				ctx.clearRect(0, 0, canvas.width, canvas.height * 0.03);
 			if (event.nativeEvent.offsetX <= 0){
-				if (player_role == 1){
+				if (role == 1){
 					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 					ctx.fillRect(0, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 					ctx.fillRect(0, 0, canvas.width * 0.1, canvas.height * 0.02)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: 0});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
 			}
 			else if (event.nativeEvent.offsetX < canvas.width-(canvas.width * 0.1)){
-				if (player_role == 1){
+				if (role == 1){
 					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 					ctx.fillRect(event.nativeEvent.offsetX, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 					ctx.fillRect(event.nativeEvent.offsetX, 0, canvas.width * 0.1, canvas.height * 0.02)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: event.nativeEvent.offsetX/(canvas.width)});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetX/(canvas.width)});
 			}
 			else{
-				if (player_role == 1){
+				if (role == 1){
 					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 					ctx.fillRect(canvas.width - (canvas.width * 0.1), canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
 				}
-				else if (player_role == 2){
+				else if (role == 2){
 					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
 					ctx.fillRect(canvas.width - (canvas.width * 0.1), 0, canvas.width * 0.1, canvas.height * 0.02)
 				}
-				socket.emit('MakeMove', {id_game:id_game,player:player_role, position: 0.9});
+				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
 			}
 		}
 	}
@@ -250,11 +225,32 @@ function Playground({id_game}:{id_game:string}){
 
 function GamePage({}) {
 	const router = useRouter();
-	const { id_game } = router.query;
+	const [id_game, setId_game] = useState<string>("");
+	const socket = useContext(SocketContext);
+	const [role, setPlayer_role] = useState<number>(0);
+	
+	useEffect(() => {
+		socket.connect();
+		if (router.isReady){
+			setId_game(router.query.id_game as string);
+			if (sessionStorage.playerId == undefined){
+				sessionStorage.setItem("playerId", uuidv4());
+				socket.emit("ClientSession", sessionStorage.playerId);
+			}
+			else
+				socket.emit("ClientSession", sessionStorage.playerId);
+			socket.emit('JoinRoom', {room_name:id_game, playerId:sessionStorage.playerId});
+			if (id_game != "" && sessionStorage.playerId != undefined){
+				fetchRole(id_game, sessionStorage.playerId).then((data:number) => {
+					setPlayer_role(data);
+				})
+			}
+		}
+	},[router.isReady, id_game, socket, role]);
 
 	return (
 		<div className="w-screen h-screen top-0 left-0 absolute grid grid-cols-1 items-center justify-items-center">
-			{id_game === undefined ? <div></div> : <Playground id_game={id_game}/>}
+			{id_game === "" || role === 0 || !socket.connected ? <div>Loading...</div> : <Playground role={role} id_game={id_game} socket={socket}/>}
 		</div>
 	)
 }

@@ -94,8 +94,8 @@ export class WsGameService {
 	// }
 
 	ClientSession(client:Socket, server:Server, playerId:string): void {
-		console.log("NewClientSession: " + playerId);
-		console.log("Clients: " + this.clients);
+		console.log("SessionId: " + playerId + " newclient:"+ client.id);
+		// console.log("Clients: " + this.clients);
 		this.clients[playerId] = client;
 	}
 
@@ -113,7 +113,7 @@ export class WsGameService {
 	}
 
 	MakeMove(client: Socket, server:Server, data: any): void {
-		console.log("MakeMove: " + data.id_game + " " + data.player + " " + data.position);
+		console.log("MakeMove: " + data.id_game + ":" + data.player + ":" + data.position);
 		server.to(data.id_game.toString()).except(client.id).emit('UpdateCanvas', {player_role: data.player, position: data.position});
 	}
 
@@ -131,7 +131,6 @@ export class WsGameService {
 	}
 
 	joinRoom(room_name:string, client_id:string,server:Server): void {
-		console.log("JoinRoom: " + room_name + " " + client_id);
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			console.log("JoinRoom: " + room_name + " " + client_id + " P1 :" + room.player1 + " P2:" + room.player2)
