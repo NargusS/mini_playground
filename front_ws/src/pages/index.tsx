@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { SocketContext } from "./_app"
+import { v4 as uuidv4 } from 'uuid';
 
 async function getRooms() {
 	const res = await fetch("http://localhost:3000/ws-game/rooms");
@@ -16,12 +17,20 @@ function Home() {
 	const router = useRouter();
 
 	useEffect(() => {
-		// socket.connect();
+		socket.connect();
+		if (sessionStorage.playerId == undefined){
+			sessionStorage.setItem("playerId", uuidv4());
+			console.log("ID undefined: " + sessionStorage.playerId);
+			socket.emit("ClientSession", sessionStorage.playerId);
+		}
+		else{
+			console.log("ID defined: " + sessionStorage.playerId);
+			socket.emit("ClientSession", sessionStorage.playerId);
+		}
 		getRooms().then((data) => {
 			console.log(data)
 			setRooms(data);
 		})
-
 		socket.on("ConnectedPlayer", (value:number) => {
 			setConnectedUser(value);
 		})
@@ -50,9 +59,7 @@ function Home() {
 					}) : <li>No rooms</li>}
 				</ul>
 				<button onClick={() => {
-					// sessionStorage.setItem("playerId", socket.id);
-					console.log("SOCKET ID: " + socket.id);
-					socket.emit("matchmaking")
+					socket.emit("matchmaking", sessionStorage.playerId)
 				}}>Matchmaking</button>
 			</main>
 		</>

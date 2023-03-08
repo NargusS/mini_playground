@@ -2,6 +2,7 @@ import { connect } from 'http2';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from './_app';
+import { v4 as uuidv4 } from 'uuid';
 
 // function GamePage(){
 // 	const router = useRouter();
@@ -59,10 +60,15 @@ function Playground({id_game}:{id_game:string}){
 	}, [])
 
 	useEffect(() => {
-		if (!socket.connected)
-			socket.connect();
-		socket.emit('JoinRoom', id_game);
-		fetchRole(id_game, socket.id).then((data) => {
+		socket.connect();
+		if (sessionStorage.playerId == undefined){
+			sessionStorage.setItem("playerId", uuidv4());
+			socket.emit("ClientSession", sessionStorage.playerId);
+		}
+		else
+			socket.emit("ClientSession", sessionStorage.playerId);
+		socket.emit('JoinRoom', {room_name:id_game, playerId:sessionStorage.playerId});
+		fetchRole(id_game, sessionStorage.playerId).then((data) => {
 			setPlayer_role(data);
 		})
 		const canvas = canvasRef.current;

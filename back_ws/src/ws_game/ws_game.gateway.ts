@@ -38,14 +38,20 @@ export class WsGameGateway{
   //   this.wsGameService.createRoom(client, this.server);
   // }
 
+  @SubscribeMessage('ClientSession')
+  handleClientSession(@ConnectedSocket() client: Socket, @MessageBody() playerId:string): void {
+    this.wsGameService.ClientSession(client, this.server, playerId);
+  }
+
   @SubscribeMessage('matchmaking')
-  handleMatchmaking(@ConnectedSocket() client: Socket): void {
-    this.wsGameService.matchmaking(client, this.server);
+  handleMatchmaking(@MessageBody() client_id:string): void {
+    this.wsGameService.matchmaking(client_id, this.server);
   }
 
   @SubscribeMessage('JoinRoom')
-  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {
-    this.wsGameService.joinRoom(client, this.server, room_name);
+  handleJoinRoom(@MessageBody() data:any) : void {
+    console.log("TEST :" + data.room_name + " " + data.playerId);
+    this.wsGameService.joinRoom(data.room_name,data.playerId, this.server);
   }
 
   @SubscribeMessage('MakeMove')
