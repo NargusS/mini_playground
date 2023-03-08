@@ -230,7 +230,9 @@ function GamePage({}) {
 	const [role, setPlayer_role] = useState<number>(0);
 	
 	useEffect(() => {
-		socket.connect();
+		if (!socket.connected)
+			socket.connect();
+		console.log("Role: " + role + " id_game: " + id_game + " socket: " + socket.connected);
 		if (router.isReady){
 			setId_game(router.query.id_game as string);
 			if (sessionStorage.playerId == undefined){
@@ -246,11 +248,11 @@ function GamePage({}) {
 				})
 			}
 		}
-	},[router.isReady, id_game, socket, role]);
+	},[socket,router.isReady, id_game, role]);
 
 	return (
 		<div className="w-screen h-screen top-0 left-0 absolute grid grid-cols-1 items-center justify-items-center">
-			{id_game === "" || role === 0 || !socket.connected ? <div>Loading...</div> : <Playground role={role} id_game={id_game} socket={socket}/>}
+			{id_game !== "" && role !== 0 ? <Playground role={role} id_game={id_game} socket={socket}/> : <div>Loading...</div> }
 		</div>
 	)
 }
