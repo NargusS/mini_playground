@@ -53,6 +53,11 @@ export class WsGameGateway{
     this.wsGameService.joinRoom(data.room_name,data.playerId, this.server);
   }
 
+  @SubscribeMessage('LeaveRoom')
+  handleLeaveRoom(@MessageBody() data:any) : void {
+    this.wsGameService.leaveRoom(data.room_name,data.playerId, this.server);
+  }
+
   @SubscribeMessage('MakeMove')
   handleMakeMove(@ConnectedSocket() client: Socket, @MessageBody() data: any): void {
     console.log("client : " + client.id)

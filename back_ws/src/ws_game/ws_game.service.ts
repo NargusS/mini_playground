@@ -148,6 +148,25 @@ export class WsGameService {
 		}
 	}
 
+	leaveRoom(room_name:string, client_id:string,server:Server): void {
+		const room: Room = this.rooms[room_name];
+		if (room !== undefined) {
+			if (room.player1 === client_id) {
+				this.clients[client_id].leave(room.name);
+				room.player1 = "";
+				
+			}
+			else if (room.player2 === client_id) {
+				this.clients[client_id].leave(room.name);
+				room.player2 = "";
+			}
+			else {
+				room.spectators.splice(room.spectators.indexOf(client_id), 1);
+				this.clients[client_id].leave(room.name);
+			}
+		}
+	}
+
 	getRooms(): {[key:string]:Room}{
 		return this.rooms;
 	}

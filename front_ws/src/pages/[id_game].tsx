@@ -285,7 +285,10 @@ function GamePage({}) {
 					</div>
 				</div>
 				<div className="bg-red-200 p-7">
-					<button className="text-2xl border border-black">LEAVE GAME</button>
+					<button className="text-2xl border border-black" onClick={() => {
+						socket.emit('LeaveRoom', {room_name:id_game, playerId:sessionStorage.playerId});
+						router.push("/");
+					}}>LEAVE GAME</button>
 				</div>
 			</div>
 		</div>
