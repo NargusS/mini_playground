@@ -32,6 +32,10 @@ export class WsGameGateway{
     this.wsGameService.userDisconnected(client, this.server);
   }
 
+  handleReconnect(client: Socket) {
+    console.log("New Reconnection")
+    this.wsGameService.userReconnected(client, this.server);
+  }
   // Function for create a room for playing
   // @SubscribeMessage('CreateRoom')
   // handleCreateRoom(@ConnectedSocket() client: Socket): void {

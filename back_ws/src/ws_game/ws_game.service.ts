@@ -36,6 +36,12 @@ export class WsGameService {
 		console.log("Disconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
 	}
 
+	userReconnected(client:Socket, server:Server): void {
+		this.number_of_player++;
+		server.emit('ConnectedPlayer', this.number_of_player);
+		console.log("Reconnected "+client.id + " ConnectedClient:" + this.getNumberOfConnectedPeople());
+	}
+
 	// createRoom(client:Socket,server:Server): void {
 	//   const room: Room = {
 	//     room_name: uuidv4(),
@@ -154,20 +160,26 @@ export class WsGameService {
 			if (room.player1 === client_id) {
 				this.clients[client_id].leave(room.name);
 				room.player1 = "";
-				
+				server.to(room.name).emit('PlayerLeft', 1);
 			}
 			else if (room.player2 === client_id) {
 				this.clients[client_id].leave(room.name);
 				room.player2 = "";
+				server.to(room.name).emit('PlayerLeft', 2);
 			}
 			else {
 				room.spectators.splice(room.spectators.indexOf(client_id), 1);
 				this.clients[client_id].leave(room.name);
+				server.to(room.name).emit('SpectatorLeft', room.spectators);
 			}
 		}
 	}
 
 	getRooms(): {[key:string]:Room}{
 		return this.rooms;
+	}
+
+	getPlayers(): number{
+		return this.number_of_player;
 	}
 }

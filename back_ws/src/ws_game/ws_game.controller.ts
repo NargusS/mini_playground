@@ -11,8 +11,14 @@ export class WsGameController {
 	getRooms(): any {
 		return this.WsGameService.getRooms();
 	}
+
 	@Get('/rooms/:room_name/:playerId')
 	getRoom(@Param('room_name') room_name:string, @Param('playerId') playerId:string): number {
 		return this.WsGameService.getRoles(room_name, playerId);
+	}
+
+	@Get('/players')
+	getPlayers(): any {
+		return this.WsGameService.getPlayers();
 	}
 }

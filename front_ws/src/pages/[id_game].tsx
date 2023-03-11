@@ -31,17 +31,25 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		const height = window.innerHeight * 0.6;
 	
 		if (width > height){
-			if (width > height * (1.75))
-				setSize({orientation:0, width: height*(1.75), height: height});
+			// if (width > height * (7/4))
+			// 	setSize({orientation:0, width: height*(7/4), height: height});
+			// else
+			// 	setSize({orientation:0, width: width, height: width*(4/7)});
+			if (width * (4/7) < height)
+				setSize({orientation:0, width: width, height: width*(4/7)});
 			else
-				setSize({orientation:0, width: width, height: width/1.75});
+				setSize({orientation:0, width: height*(7/4), height: height});
 		}
 		else
 		{
-			if (height > width * (1.75))
-				setSize({orientation:1,width: width, height: width*(1.75)});
+			if (height * (4/7) < width)
+				setSize({orientation:1,width: height*(4/7), height: height});
 			else
-				setSize({orientation:1,width: height/1.75, height: height});
+				setSize({orientation:1,width: width, height: width*(7/4)});
+			// if (height > width * (7/4))
+			// 	setSize({orientation:1,width: width, height: width*(7/4)});
+			// else
+			// 	setSize({orientation:1,width: height*(4/7), height: height});
 		}
 	}
 
@@ -208,7 +216,7 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	}, [player2])
 
 	return (
-		<div className="h-[70vh] w-full flex flex-col justify-center items-center overflow-hidden">
+		<div className="h-[70vh] w-full flex flex-col justify-center items-center">
 			<canvas id="canvas" ref={canvasRef} width={size.width} height={size.height} className="border-slate-700 border-8" onMouseMove={(evt)=> updateDisplay(evt)}  onMouseLeave={(evt)=> updateDisplay(evt)}></canvas>
 		</div>
 	);
@@ -245,15 +253,21 @@ function GamePage({}) {
 	},[router.isReady, id_game, role]);
 
 	return (
-		<div className="w-screen h-screen top-0 left-0 absolute flex flex-col items-center">
-			<div className="bg-blue-100 w-full h-[10vh] inline-flex justify-center items-center">
-				<h1 className="bg-slate-500 w-fit h-min text-[6vh]">1:0</h1>
+		<div className="w-screen h-screen top-0 left-0 absolute flex flex-col items-center justify-center bg-">
+			<div className="w-full h-[10vh] inline-flex justify-center items-center gap-2">
+				<h1 className="w-fit h-min sm:text-4xl text-sm">1:0</h1>
+				<div className="">
+					<button className="sm:text-2xl text-sm bg-red-200 rounded-lg p-2" onClick={() => {
+						socket.emit('LeaveRoom', {room_name:id_game, playerId:sessionStorage.playerId});
+						router.push("/");
+					}}>QUIT</button>
+				</div>
 			</div>
 			{id_game !== "" && role !== 0 && socket.connected ? <Playground role={role} id_game={id_game} socket={socket}/> : <div>Loading...</div> }
-			<div className="h-[20vh] w-full inline-flex">
+			<div className="h-[20vh] max-w-screen w-screen inline-flex">
 				<div className="grow bg-slate-600 flex flex-col">
-					<h1 className="text-xl w-full h-fit bg-slate-800 text-white text-center">CHAT</h1>
-					<ul className="grow overflow-y-scroll flex flex-col p-3">
+					<h1 className="sm:text-xl text-sm w-full h-fit bg-slate-800 text-white text-center">CHAT</h1>
+					<ul className="grow overflow-y-scroll flex flex-col p-3 sm:text-xl text-xs">
 						<li className="w-fit h-fit">
 							<p className="text-white font-bold">esafar</p>
 							<p className="text-white font-light">Bonne Game les gars</p>
@@ -281,14 +295,8 @@ function GamePage({}) {
 					</ul>
 					<div className="w-full inline-flex">
 						<input type="text" className="border border-black grow h-full"></input>
-						<button className="border border-black p-2 text-white font-light">SEND</button>
+						<button className="border border-black sm:p-2 p-1 text-white font-light sm:text-xl text-xs">SEND</button>
 					</div>
-				</div>
-				<div className="bg-red-200 p-7">
-					<button className="text-2xl border border-black" onClick={() => {
-						socket.emit('LeaveRoom', {room_name:id_game, playerId:sessionStorage.playerId});
-						router.push("/");
-					}}>LEAVE GAME</button>
 				</div>
 			</div>
 		</div>

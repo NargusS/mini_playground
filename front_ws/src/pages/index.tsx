@@ -9,6 +9,13 @@ async function getRooms() {
 	return data;
 }
 
+async function getConnectedUser() {
+	const res = await fetch("http://localhost:3000/ws-game/players");
+	const data = await res.json();
+	return data;
+}
+
+
 function Home() {
 	const [connectedUser, setConnectedUser] = useState(0);
 	const [rooms, setRooms] = useState<any>([]);
@@ -26,8 +33,11 @@ function Home() {
 			socket.emit("ClientSession", sessionStorage.playerId);
 		}
 		getRooms().then((data) => {
-			console.log(data)
-			setRooms(data);
+			const new_rooms = Object.entries(data);
+			setRooms(new_rooms);
+		})
+		getConnectedUser().then((data) => {
+			setConnectedUser(data);
 		})
 		socket.on("ConnectedPlayer", (value:number) => {
 			setConnectedUser(value);
@@ -50,8 +60,11 @@ function Home() {
 				<ul>
 					{rooms.length > 0 ? rooms.map((room:any) => {
 						return (
-							<li key={room.room_name}>
-								IDROOM:{room.room_name}
+							<li key={room[0]}>
+								IDROOM:{room[0]}
+								<button className="bg-blue-500 text-white p-1 rounded-[8px]" onClick={() => {
+									router.push("/" + room[0]);
+								} }>Join</button>
 							</li>
 						)
 					}) : <li>No rooms</li>}
