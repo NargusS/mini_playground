@@ -4,13 +4,13 @@ import { SocketContext } from "./_app"
 import { v4 as uuidv4 } from 'uuid';
 
 async function getRooms() {
-	const res = await fetch("http://localhost:3000/ws-game/rooms");
+	const res = await fetch("http://10.18.199.128:3000/ws-game/rooms");
 	const data = await res.json();
 	return data;
 }
 
 async function getConnectedUser() {
-	const res = await fetch("http://localhost:3000/ws-game/players");
+	const res = await fetch("http://10.18.199.128:3000/ws-game/players");
 	const data = await res.json();
 	return data;
 }
@@ -20,7 +20,7 @@ function Home() {
 	const [connectedUser, setConnectedUser] = useState(0);
 	const [rooms, setRooms] = useState<any>([]);
 	const socket = useContext(SocketContext);
-	// const [socket, setSocket] = useState(io("http://localhost:4242/ws-game", {transports:["websocket"], autoConnect:false}));
+	// const [socket, setSocket] = useState(io("http://10.18.199.128:4242/ws-game", {transports:["websocket"], autoConnect:false}));
 	const router = useRouter();
 
 	useEffect(() => {
