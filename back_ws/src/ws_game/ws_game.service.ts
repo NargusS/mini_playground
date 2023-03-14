@@ -3,14 +3,29 @@ import { ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {v4 as uuidv4} from 'uuid';
 
+type Ball={
+	x: number;
+	y: number;
+	vx: number;
+	vy: number;
+	speed: number;
+	radius: number;
+}
+
+type Game = {
+	player1_position: number;
+	player2_position: number;
+	player1_score: number;
+	player2_score: number;
+	is_playing: boolean;
+	ball: Ball;
+}
 type Room = {
 	name: string;
 	player1: string;
 	player2: string;
 	spectators: string[];
-	player1_score: number;
-	player2_score: number;
-	is_playing: boolean;
+	game: Game;
 }
 
 @Injectable()
@@ -67,9 +82,21 @@ export class WsGameService {
 			player1: client1,
 			player2: client2,
 			spectators: [],
-			player1_score: 0,
-			player2_score: 0,
-			is_playing: false
+			game: {
+				player1_position: 0,
+				player2_position: 0,
+				player1_score: 0,
+				player2_score: 0,
+				is_playing: false,
+				ball: {
+					x: 0.5,
+					y: 0.5,
+					vx: 0.001,
+					vy: 0.001,
+					speed: 1,
+					radius: 0.015,
+				}
+			}
 		}
 
 		this.rooms[room.name] = room;
@@ -120,6 +147,12 @@ export class WsGameService {
 
 	MakeMove(client: Socket, server:Server, data: any): void {
 		console.log("MakeMove: " + data.id_game + ":" + data.player + ":" + data.position);
+		if (this.rooms[data.id_game] !== undefined) {
+			if (data.player == 1)
+				this.rooms[data.id_game].game.player1_position = data.position;
+			else if (data.player == 2)
+				this.rooms[data.id_game].game.player2_position = data.position;
+		}
 		server.to(data.id_game.toString()).except(client.id).emit('UpdateCanvas', {player_role: data.player, position: data.position});
 	}
 
@@ -178,7 +211,7 @@ export class WsGameService {
 	startGame(room_name:string, server:Server): void {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
-			room.is_playing = true;
+			room.game.is_playing = true;
 			server.to(room.name).emit('StartGame', room.name);
 		}
 	}
@@ -187,10 +220,44 @@ export class WsGameService {
 		const room: Room = this.rooms[room_name];
 		if (room !== undefined) {
 			if (player == 1)
-				room.player1_score++;
+				room.game.player1_score++;
 			else
-				room.player2_score++;
-			server.to(room.name).emit('UpdateScore', {player1_score: room.player1_score, player2_score: room.player2_score});
+				room.game.player2_score++;
+			server.to(room.name).emit('UpdateScore', {player1_score: room.game.player1_score, player2_score: room.game.player2_score});
+		}
+	}
+
+	requestBallPosition(room_name:string, server:Server): void {
+		const room: Room = this.rooms[room_name];
+		if (room !== undefined) {
+			let ball = room.game.ball;
+			server.to(room.name).emit('GetBallPosition', ball);
+			if (ball.x - ball.radius <= 0.02 && (ball.y >= this.rooms[room_name].game.player2_position && ball.y <= this.rooms[room_name].game.player2_position + 0.2) ){
+				ball.vx = -ball.vx;
+			}
+			else if (ball.x + ball.radius >= 1 - (0.02) && (ball.y >= this.rooms[room_name].game.player1_position && ball.y <= this.rooms[room_name].game.player1_position + 0.2)){
+				ball.vx = -ball.vx;
+			}
+			else if (ball.x - ball.radius <= 0.02){
+				console.log("GOAL 1: ORIENTATION 0")
+				ball.x = 0.5;
+				ball.y = 0.5;
+			}
+			else if (ball.x + ball.radius >= (1 - 0.02)){
+				console.log("GOAL 2 Orientation 0")
+				ball.x = 0.5;
+				ball.y = 0.5;
+			}
+			else if (ball.y - ball.radius < 0){
+				ball.vy = -ball.vy;
+			}
+			else if (ball.y + ball.radius  >= 1){
+				ball.vy = -ball.vy;
+			}
+			ball.x += ball.vx;
+			ball.y += ball.vy;
+			this.rooms[room_name].game.ball = ball;
+			// console.log("Ball Position: " + ball.x + ":" + ball.y + ":" + ball.vx + ":" + ball.vy);
 		}
 	}
 

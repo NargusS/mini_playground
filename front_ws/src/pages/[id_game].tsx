@@ -16,66 +16,67 @@ function drawBall(canvas:HTMLCanvasElement){
 	if (!ctx)
 		return;//console.log("ctx is null");
 	ctx.beginPath();
+	console.log("x: " + data.ballObj.x + " y: " + data.ballObj.y + " radius: " + data.ballObj.radius)
 	ctx.arc(canvas.width * data.ballObj.x, canvas.height * data.ballObj.y, canvas.width * data.ballObj.radius, 0, 2 * Math.PI);
 	ctx.fillStyle = "yellow";
 	ctx.fill();
 	ctx.closePath();
-	data.ballObj.x += (data.ballObj.dx * data.ballObj.speed);
-	data.ballObj.y += (data.ballObj.dy * data.ballObj.speed);
+	// data.ballObj.x += (data.ballObj.dx * data.ballObj.speed);
+	// data.ballObj.y += (data.ballObj.dy * data.ballObj.speed);
 }
 
-function wallColission(canvas:HTMLCanvasElement){
-	if (canvas.width == 0 || canvas.height == 0)
-		return;
-	if (data.playground.orientation == 0){
-		if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) <= (canvas.width * data.player2.width) && (data.ballObj.y >= data.player2.y && data.ballObj.y <= data.player2.y + data.player2.height) ){
-			data.ballObj.dx = -data.ballObj.dx;
-		}
-		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius) >= (canvas.width - (canvas.width * data.player1.width)) && (data.ballObj.y >= data.player1.y && data.ballObj.y <= data.player1.y + data.player1.height)){
-			data.ballObj.dx = -data.ballObj.dx;
-		}
-		else if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) <= (canvas.width * data.player1.width)){
-			console.log("GOAL 1: ORIENTATION 0")
-			data.ballObj.x = 0.5;
-			data.ballObj.y = 0.5;
-		}
-		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius) >= (canvas.width - (canvas.width * data.player2.width))){
-			console.log("GOAL 2 Orientation 0")
-			data.ballObj.x = 0.5;
-			data.ballObj.y = 0.5;
-		}
-		else if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) < 0){
-			data.ballObj.dy = -data.ballObj.dy;
-		}
-		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius)  >= canvas.height){
-			data.ballObj.dy = -data.ballObj.dy;
-		}
-	}
-	else if (data.playground.orientation == 1){
-		if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) <= (canvas.height * data.player2.height) && (data.ballObj.x >= data.player2.x && data.ballObj.x <= data.player2.x + data.player2.width) ){
-			data.ballObj.dy = -data.ballObj.dy;
-		}
-		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius) >= (canvas.height - (canvas.height * data.player1.height)) && (data.ballObj.x >= data.player1.x && data.ballObj.x <= data.player1.x + data.player1.width)){
-			data.ballObj.dy = -data.ballObj.dy;
-		}
-		else if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) <= (canvas.height * data.player2.height)){
-			console.log("GOAL 2 Orientation 1")
-			data.ballObj.x = 0.5;
-			data.ballObj.y = 0.5;
-		}
-		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius) >= (canvas.height - (canvas.height * data.player1.height))){
-			console.log("GOAL 1 Orientation 1")
-			data.ballObj.x = 0.5;
-			data.ballObj.y = 0.5;
-		}
-		else if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) < 0){
-			data.ballObj.dx = -data.ballObj.dx;
-		}
-		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius)  >= canvas.width){
-			data.ballObj.dx = -data.ballObj.dx;
-		}
-	}
-}
+// function wallColission(canvas:HTMLCanvasElement){
+// 	if (canvas.width == 0 || canvas.height == 0)
+// 		return;
+// 	if (data.playground.orientation == 0){
+// 		if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) <= (canvas.width * data.player2.width) && (data.ballObj.y >= data.player2.y && data.ballObj.y <= data.player2.y + data.player2.height) ){
+// 			data.ballObj.dx = -data.ballObj.dx;
+// 		}
+// 		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius) >= (canvas.width - (canvas.width * data.player1.width)) && (data.ballObj.y >= data.player1.y && data.ballObj.y <= data.player1.y + data.player1.height)){
+// 			data.ballObj.dx = -data.ballObj.dx;
+// 		}
+// 		else if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) <= (canvas.width * data.player1.width)){
+// 			console.log("GOAL 1: ORIENTATION 0")
+// 			data.ballObj.x = 0.5;
+// 			data.ballObj.y = 0.5;
+// 		}
+// 		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius) >= (canvas.width - (canvas.width * data.player2.width))){
+// 			console.log("GOAL 2 Orientation 0")
+// 			data.ballObj.x = 0.5;
+// 			data.ballObj.y = 0.5;
+// 		}
+// 		else if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) < 0){
+// 			data.ballObj.dy = -data.ballObj.dy;
+// 		}
+// 		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius)  >= canvas.height){
+// 			data.ballObj.dy = -data.ballObj.dy;
+// 		}
+// 	}
+// 	else if (data.playground.orientation == 1){
+// 		if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) <= (canvas.height * data.player2.height) && (data.ballObj.x >= data.player2.x && data.ballObj.x <= data.player2.x + data.player2.width) ){
+// 			data.ballObj.dy = -data.ballObj.dy;
+// 		}
+// 		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius) >= (canvas.height - (canvas.height * data.player1.height)) && (data.ballObj.x >= data.player1.x && data.ballObj.x <= data.player1.x + data.player1.width)){
+// 			data.ballObj.dy = -data.ballObj.dy;
+// 		}
+// 		else if ((data.ballObj.y * canvas.height) - (canvas.width * data.ballObj.radius) <= (canvas.height * data.player2.height)){
+// 			console.log("GOAL 2 Orientation 1")
+// 			data.ballObj.x = 0.5;
+// 			data.ballObj.y = 0.5;
+// 		}
+// 		else if ((data.ballObj.y * canvas.height) + (canvas.width * data.ballObj.radius) >= (canvas.height - (canvas.height * data.player1.height))){
+// 			console.log("GOAL 1 Orientation 1")
+// 			data.ballObj.x = 0.5;
+// 			data.ballObj.y = 0.5;
+// 		}
+// 		else if ((data.ballObj.x * canvas.width) - (canvas.width * data.ballObj.radius) < 0){
+// 			data.ballObj.dx = -data.ballObj.dx;
+// 		}
+// 		else if ((data.ballObj.x * canvas.width) + (canvas.width * data.ballObj.radius)  >= canvas.width){
+// 			data.ballObj.dx = -data.ballObj.dx;
+// 		}
+// 	}
+// }
 
 function drawPlayer(canvas:HTMLCanvasElement){
 	const ctx = canvas.getContext('2d');
@@ -84,14 +85,14 @@ function drawPlayer(canvas:HTMLCanvasElement){
 	if (data.playground.orientation == 0){
 		data.player1.x = 0;
 		data.player2.x = 1 - data.player2.width;
-		if (data.player1.y < 0)
-			data.player1.y = 0;
-		else if (data.player1.y > 1 - data.player1.height)
-			data.player1.y = 1 - data.player1.height;
-		if (data.player2.y < 0)
-			data.player2.y = 0;
-		else if (data.player2.y > 1 - data.player2.height)
-			data.player2.y = 1 - data.player2.height;
+		// if (data.player1.y < 0)
+		// 	data.player1.y = 0;
+		// else if (data.player1.y > 1 - data.player1.height)
+		// 	data.player1.y = 1 - data.player1.height;
+		// if (data.player2.y < 0)
+		// 	data.player2.y = 0;
+		// else if (data.player2.y > 1 - data.player2.height)
+		// 	data.player2.y = 1 - data.player2.height;
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
 		ctx.fillRect(canvas.width-(canvas.width * data.player2.width), data.player1.y * canvas.height, canvas.width * data.player1.width, canvas.height * data.player1.height)
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
@@ -99,19 +100,19 @@ function drawPlayer(canvas:HTMLCanvasElement){
 	}
 	else if (data.playground.orientation == 1){
 		data.player1.y = 0;
-		data.player2.y = 1 - data.player2.height;
-		if (data.player1.x < 0)
-			data.player1.x = 0;
-		else if (data.player1.x > 1 - data.player1.width)
-			data.player1.x = 1 - data.player1.width;
-		if (data.player2.x < 0)
-			data.player2.x = 0;
-		else if (data.player2.x > 1 - data.player2.width)
-			data.player2.x = 1 - data.player2.width;
+		data.player2.y = data.player2.height;
+		// if (data.player1.x < 0)
+		// 	data.player1.x = 0;
+		// else if (data.player1.x > 1 - data.player1.width)
+		// 	data.player1.x = 1 - data.player1.width;
+		// if (data.player2.x < 0)
+		// 	data.player2.x = 0;
+		// else if (data.player2.x > 1 - data.player2.width)
+		// 	data.player2.x = 1 - data.player2.width;
 		ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-		ctx.fillRect(data.player1.x * canvas.width, canvas.height - (canvas.height * data.player2.height), canvas.width * data.player1.width, canvas.height * data.player1.height)
+		ctx.fillRect((1 - data.player1.x - 0.2) * canvas.width, canvas.height - (canvas.height * data.player2.height), canvas.width * data.player1.width, canvas.height * data.player1.height)
 		ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-		ctx.fillRect(data.player2.x * canvas.width, 0, canvas.width * data.player2.width, canvas.height * data.player2.height)
+		ctx.fillRect((1 - data.player2.x - 0.2) * canvas.width, 0, canvas.width * data.player2.width, canvas.height * data.player2.height)
 	}
 }
 
@@ -134,6 +135,14 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		const height = window.innerHeight * 0.6;
 
 		if (width > height){
+			if (data.playground.orientation == 1){
+				let tmp = data.player1.x;
+				data.player1.x = data.player1.y;
+				data.player1.y = tmp;
+				tmp = data.player2.x;
+				data.player2.x = data.player2.y;
+				data.player2.y = tmp;
+			}
 			data.playground.orientation = 0;
 			data.player1.width = 0.02;
 			data.player1.height = 0.2;
@@ -152,6 +161,14 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		}
 		else
 		{
+			if (data.playground.orientation == 0){
+				let tmp = data.player1.x;
+				data.player1.x = data.player1.y;
+				data.player1.y = tmp;
+				tmp = data.player2.x;
+				data.player2.x = data.player2.y;
+				data.player2.y = tmp;
+			}
 			data.playground.orientation = 1;
 			data.player1.width = 0.2;
 			data.player1.height = 0.02;
@@ -236,24 +253,43 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 	// }, [])
 
 	useEffect(() => {
-		socket.on('UpdateCanvas', (data) => {
-			if (data.player_role == 1)
-				data.position = data.player1;	
-			else if (data.player_role == 2)
-				data.position = data.player2;
-		});
 		getCanvasSize();
 		console.log(size.height)
+		socket.on('UpdateCanvas', (player_info) => {
+			console.log(player_info);
+			if (player_info.player_role == 1 && data.playground.orientation == 0)
+				data.player1.y = player_info.position;	
+			else if (player_info.player_role == 2 && data.playground.orientation == 0)
+				data.player2.y = player_info.position;
+			else if (player_info.player_role == 1 && data.playground.orientation == 1)
+				data.player1.x = player_info.position;
+			else if (player_info.player_role == 2 && data.playground.orientation == 1)
+				data.player2.x = player_info.position;
+		});
+		socket.on("GetBallPosition", (ball) => {
+			if (data.playground.orientation == 0){
+				data.ballObj.x= ball.x;
+				data.ballObj.y= ball.y;
+			}
+			else if (data.playground.orientation == 1){
+				data.ballObj.x= 1 - ball.y;
+				data.ballObj.y= ball.x;
+			}
+			data.ballObj.speed= ball.speed;
+			data.ballObj.radius= ball.radius;
+
+		})
 		const canvas = canvasRef.current;
 		if (!canvas)
 			return;//console.log("canvas is null");
 		const render = () => {
+			socket.emit("RequestBallPosition", {room_name:id_game})
 			const ctx = canvas.getContext('2d');
 			if (!ctx)
 			return;//console.log("ctx is null");
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			drawBall(canvas);
-			wallColission(canvas);
+			// wallColission(canvas);
 			drawPlayer(canvas);
 			requestAnimationFrame(render);
 		};
@@ -264,110 +300,110 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 		}
 	}, [])
 
-	function updateDisplay(event:any) {
-		const canvas = canvasRef.current;
-		if(!canvas)
-			return;//console.log("canvas is null");
-		const ctx = canvas.getContext('2d');
-		if (!ctx)
-			return;//console.log("ctx is null");
-		// CHANGE POURCENTAGE FOR SPEED		
-		if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.03){
-			return;
-		}
-		else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.03){
-			return;
-		}
-		else{
-			if (size.orientation == 0){
-				setPrevPos(event.nativeEvent.offsetY);
-			}
-			else if (size.orientation == 1){
-				setPrevPos(event.nativeEvent.offsetX);
-			}
-			else
-				return;
-		}
-		if (size.orientation == 0){
-			if (role == 1)
-				ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
-			else if (role == 2)
-				ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
-			if (event.nativeEvent.offsetY <= 0){
-				if (role == 1){
-				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-				ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
-				}
-				else if (role == 2){
-				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-				ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
-			}
-			else if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1)){
-				if (role == 1){
-					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-					ctx.fillRect(0, event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
-				}
-				else if (role == 2){
-					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-					ctx.fillRect(canvas.width-(canvas.width * 0.02), event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)/////
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetY/(canvas.height)});
-			}
-			else{
-				if (role == 1){
-					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-					ctx.fillRect(0, canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
-				}
-				else if (role == 2){
-					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-					ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
-			}
-		}
-		else if (size.orientation == 1){
-			// size.orientation 1
-			if (role == 1)
-				ctx.clearRect(0, canvas.height - (canvas.height * 0.03), canvas.width, canvas.height* 0.03);
-			else if (role == 2)
-				ctx.clearRect(0, 0, canvas.width, canvas.height * 0.03);
-			if (event.nativeEvent.offsetX <= 0){
-				if (role == 1){
-					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-					ctx.fillRect(0, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
-				}
-				else if (role == 2){
-					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-					ctx.fillRect(0, 0, canvas.width * 0.1, canvas.height * 0.02)
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
-			}
-			else if (event.nativeEvent.offsetX < canvas.width-(canvas.width * 0.1)){
-				if (role == 1){
-					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-					ctx.fillRect(event.nativeEvent.offsetX, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
-				}
-				else if (role == 2){
-					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-					ctx.fillRect(event.nativeEvent.offsetX, 0, canvas.width * 0.1, canvas.height * 0.02)
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetX/(canvas.width)});
-			}
-			else{
-				if (role == 1){
-					ctx.fillStyle = 'rgba(0, 0, 255, 1)'
-					ctx.fillRect(canvas.width - (canvas.width * 0.1), canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
-				}
-				else if (role == 2){
-					ctx.fillStyle = 'rgba(255, 0, 0, 1)'
-					ctx.fillRect(canvas.width - (canvas.width * 0.1), 0, canvas.width * 0.1, canvas.height * 0.02)
-				}
-				socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
-			}
-		}
-	}
+	// function updateDisplay(event:any) {
+	// 	const canvas = canvasRef.current;
+	// 	if(!canvas)
+	// 		return;//console.log("canvas is null");
+	// 	const ctx = canvas.getContext('2d');
+	// 	if (!ctx)
+	// 		return;//console.log("ctx is null");
+	// 	// CHANGE POURCENTAGE FOR SPEED		
+	// 	if (size.orientation == 0 && Math.abs((prevPos / canvas.height) - (event.nativeEvent.offsetY/canvas.height)) < 0.03){
+	// 		return;
+	// 	}
+	// 	else if (size.orientation == 1 && Math.abs((prevPos / canvas.width) - (event.nativeEvent.offsetX/canvas.width)) < 0.03){
+	// 		return;
+	// 	}
+	// 	else{
+	// 		if (size.orientation == 0){
+	// 			setPrevPos(event.nativeEvent.offsetY);
+	// 		}
+	// 		else if (size.orientation == 1){
+	// 			setPrevPos(event.nativeEvent.offsetX);
+	// 		}
+	// 		else
+	// 			return;
+	// 	}
+	// 	if (size.orientation == 0){
+	// 		if (role == 1)
+	// 			ctx.clearRect(0, 0, canvas.width * 0.03, canvas.height);
+	// 		else if (role == 2)
+	// 			ctx.clearRect(canvas.width - (canvas.width * 0.03), 0, canvas.width * 0.03, canvas.height);
+	// 		if (event.nativeEvent.offsetY <= 0){
+	// 			if (role == 1){
+	// 			ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 			ctx.fillRect(0, 0, canvas.width * 0.02, canvas.height * 0.1)
+	// 			}
+	// 			else if (role == 2){
+	// 			ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 			ctx.fillRect(canvas.width-(canvas.width * 0.02), 0, canvas.width * 0.02, canvas.height * 0.1)
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
+	// 		}
+	// 		else if (event.nativeEvent.offsetY < canvas.height-(canvas.height * 0.1)){
+	// 			if (role == 1){
+	// 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 				ctx.fillRect(0, event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)
+	// 			}
+	// 			else if (role == 2){
+	// 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 				ctx.fillRect(canvas.width-(canvas.width * 0.02), event.nativeEvent.offsetY, canvas.width * 0.02, canvas.height * 0.1)/////
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetY/(canvas.height)});
+	// 		}
+	// 		else{
+	// 			if (role == 1){
+	// 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 				ctx.fillRect(0, canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
+	// 			}
+	// 			else if (role == 2){
+	// 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 				ctx.fillRect(canvas.width-(canvas.width * 0.02), canvas.height-(canvas.height * 0.1), canvas.width * 0.02, canvas.height * 0.1)
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
+	// 		}
+	// 	}
+	// 	else if (size.orientation == 1){
+	// 		// size.orientation 1
+	// 		if (role == 1)
+	// 			ctx.clearRect(0, canvas.height - (canvas.height * 0.03), canvas.width, canvas.height* 0.03);
+	// 		else if (role == 2)
+	// 			ctx.clearRect(0, 0, canvas.width, canvas.height * 0.03);
+	// 		if (event.nativeEvent.offsetX <= 0){
+	// 			if (role == 1){
+	// 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 				ctx.fillRect(0, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			else if (role == 2){
+	// 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 				ctx.fillRect(0, 0, canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: 0});
+	// 		}
+	// 		else if (event.nativeEvent.offsetX < canvas.width-(canvas.width * 0.1)){
+	// 			if (role == 1){
+	// 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 				ctx.fillRect(event.nativeEvent.offsetX, canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			else if (role == 2){
+	// 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 				ctx.fillRect(event.nativeEvent.offsetX, 0, canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: event.nativeEvent.offsetX/(canvas.width)});
+	// 		}
+	// 		else{
+	// 			if (role == 1){
+	// 				ctx.fillStyle = 'rgba(0, 0, 255, 1)'
+	// 				ctx.fillRect(canvas.width - (canvas.width * 0.1), canvas.height - (canvas.height * 0.02), canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			else if (role == 2){
+	// 				ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+	// 				ctx.fillRect(canvas.width - (canvas.width * 0.1), 0, canvas.width * 0.1, canvas.height * 0.02)
+	// 			}
+	// 			socket.emit('MakeMove', {id_game:id_game,player:role, position: 0.9});
+	// 		}
+	// 	}
+	// }
   
   
 	
@@ -417,32 +453,80 @@ function Playground(props:{role:number, id_game:string, socket:Socket}){
 				if (!canvas)
 					return;// throw new Error("Canvas not found");
 				if (size.orientation == 0){
-					if (role == 1)
+					if (role == 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
-					else if (role == 2)
+						if (data.player1.y < 0)
+							data.player1.y = 0;
+						else if (data.player1.y > 0.8)
+							data.player1.y = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.y})
+					}
+					else if (role == 2){
 						data.player2.y = evt.nativeEvent.offsetY/(canvas.height);
+						if (data.player2.y < 0)
+							data.player2.y = 0;
+						else if (data.player2.y > 0.8)
+							data.player2.y = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.y})
+					}
 				}
 				else if (size.orientation == 1){
-					if (role == 1)
-						data.player1.x = evt.nativeEvent.offsetX/(canvas.width);
-					else if (role == 2)
-						data.player2.x = evt.nativeEvent.offsetX/(canvas.width);
+					if (role == 1){
+						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
+						if (data.player1.x < 0)
+							data.player1.x = 0;
+						else if (data.player1.x > 0.8)
+							data.player1.x = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
+					}
+					else if (role == 2){
+						data.player2.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
+						if (data.player2.x < 0)
+							data.player2.x = 0;
+						else if (data.player2.x > 0.8)
+							data.player2.x = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.x})
+					}
 				}
 			}}  onMouseLeave={(evt)=> {
 				const canvas = canvasRef.current;
 				if (!canvas)
 					return;// throw new Error("Canvas not found");
 				if (size.orientation == 0){
-					if (role == 1)
+					if (role == 1){
 						data.player1.y = evt.nativeEvent.offsetY/(canvas.height);
-					else if (role == 2)
+						if (data.player1.y < 0)
+							data.player1.y = 0;
+						else if (data.player1.y > 0.8)
+							data.player1.y = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.y})
+					}
+					else if (role == 2){
 						data.player2.y = evt.nativeEvent.offsetY/(canvas.height);
+						if (data.player2.y < 0)
+							data.player2.y = 0;
+						else if (data.player2.y > 0.8)
+							data.player2.y = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.y})
+					}
 				}
 				else if (size.orientation == 1){
-					if (role == 1)
-						data.player1.x = evt.nativeEvent.offsetX/(canvas.width);
-					else if (role == 2)
-						data.player2.x = evt.nativeEvent.offsetX/(canvas.width);
+					if (role == 1){
+						data.player1.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
+						if (data.player1.x < 0)
+							data.player1.x = 0;
+						else if (data.player1.x > 0.8)
+							data.player1.x = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:1, position: data.player1.x})
+					}
+					else if (role == 2){
+						data.player2.x = 1-(evt.nativeEvent.offsetX/(canvas.width));
+						if (data.player2.x < 0)
+							data.player2.x = 0;
+						else if (data.player2.x > 0.8)
+							data.player2.x = 0.8;
+						socket.emit('MakeMove', {id_game:id_game,player:2, position: data.player2.x})
+					}
 				}
 			}}></canvas>
 		</div>
