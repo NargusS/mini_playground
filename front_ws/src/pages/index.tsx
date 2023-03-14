@@ -4,13 +4,13 @@ import { SocketContext } from "./_app"
 import { v4 as uuidv4 } from 'uuid';
 
 async function getRooms() {
-	const res = await fetch("http://10.18.199.128:3000/ws-game/rooms");
+	const res = await fetch(process.env.API_URL+"/ws-game/rooms");
 	const data = await res.json();
 	return data;
 }
 
 async function getConnectedUser() {
-	const res = await fetch("http://10.18.199.128:3000/ws-game/players");
+	const res = await fetch(process.env.API_URL+"/ws-game/players");
 	const data = await res.json();
 	return data;
 }
