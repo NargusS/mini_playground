@@ -68,6 +68,11 @@ export class WsGameGateway{
     this.wsGameService.MakeMove(client, this.server,data);
   }
 
+  @SubscribeMessage('StartGame')
+  handleStartGame(@MessageBody() data:any) : void {
+    this.wsGameService.startGame(data.room_name, this.server);
+  }
+
   // Function for join a room for playing
   // @SubscribeMessage('JoinRoom')
   // handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room_name: string): void {

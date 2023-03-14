@@ -175,6 +175,25 @@ export class WsGameService {
 		}
 	}
 
+	startGame(room_name:string, server:Server): void {
+		const room: Room = this.rooms[room_name];
+		if (room !== undefined) {
+			room.is_playing = true;
+			server.to(room.name).emit('StartGame', room.name);
+		}
+	}
+
+	UpdateScore(room_name:string, player:number, server:Server): void {
+		const room: Room = this.rooms[room_name];
+		if (room !== undefined) {
+			if (player == 1)
+				room.player1_score++;
+			else
+				room.player2_score++;
+			server.to(room.name).emit('UpdateScore', {player1_score: room.player1_score, player2_score: room.player2_score});
+		}
+	}
+
 	getRooms(): {[key:string]:Room}{
 		return this.rooms;
 	}
