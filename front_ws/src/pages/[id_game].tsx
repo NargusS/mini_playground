@@ -6,7 +6,7 @@ import { Socket } from 'socket.io-client';
 import data from './game_data.ts';
 
 async function fetchRole(id_game:string, playerId:string){
-	const res = await fetch("http://localhost:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
+	const res = await fetch("http://10.18.199.128:3000/ws-game/rooms/"+ id_game + "/"+ playerId);
 	const data = await res.json();
 	return data;
 }
